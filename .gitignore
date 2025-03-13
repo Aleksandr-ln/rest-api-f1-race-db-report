@@ -3,3 +3,13 @@
 /workspace.xml
 .idea/
 venv/
+logs/
+.coverage
+REST_API_report_of_Monaco_2018_Racing/__pycache__/
+REST_API_report_of_Monaco_2018_Racing/api/__pycache__/
+REST_API_report_of_Monaco_2018_Racing/services/__pycache__/
+database/__pycache__/
+tests/__pycache__/
+tests/api/__pycache__/
+tests/database/__pycache__/
+tests/services/__pycache__/

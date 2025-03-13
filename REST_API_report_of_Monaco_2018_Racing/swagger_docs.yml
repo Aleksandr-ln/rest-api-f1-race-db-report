@@ -1,0 +1,70 @@
+swagger: "2.0"
+info:
+  title: Race Report API
+  description: API for retrieving race qualification results in JSON or XML format.
+  version: "1.0.0"
+paths:
+  /api/v1/report/:
+    get:
+      summary: "Retrieve the race report"
+      description: "Returns race qualification results in JSON or XML format."
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: query
+          name: format
+          type: string
+          required: false
+          enum: [json, xml]
+          default: json
+          description: "Response format (json or xml)"
+      responses:
+        200:
+          description: A JSON or XML report of the race
+          examples:
+            application/json: |
+              {
+                "race": "Monaco 2018 Grand Prix - Qualification",
+                "date": "2018-05-24",
+                "results": [
+                  {
+                    "position": 1,
+                    "driver": "Sebastian Vettel",
+                    "team": "FERRARI",
+                    "lap_time": "1:04.415"
+                  }
+                ],
+                "disqualified": [
+                  {
+                    "position": 16,
+                    "driver": "Lewis Hamilton",
+                    "team": "MERCEDES",
+                    "lap_time": "-7:12.460"
+                  }
+                ]
+              }
+            application/xml: |
+              <report>
+                <race>Monaco 2018 Grand Prix - Qualification</race>
+                <date>2018-05-24</date>
+                <results>
+                  <result>
+                    <position>1</position>
+                    <driver>Sebastian Vettel</driver>
+                    <team>FERRARI</team>
+                    <lap_time>1:04.415</lap_time>
+                  </result>
+                </results>
+                <disqualified>
+                  <position>16</position>
+                  <driver>Lewis Hamilton</driver>
+                  <team>MERCEDES</team>
+                  <lap_time>-7:12.460</lap_time>
+                </disqualified>
+              </report>
+        400:
+          description: "Invalid request format"
