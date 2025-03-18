@@ -8,6 +8,14 @@ logs/
 REST_API_report_of_Monaco_2018_Racing/__pycache__/
 REST_API_report_of_Monaco_2018_Racing/api/__pycache__/
 REST_API_report_of_Monaco_2018_Racing/services/__pycache__/
+racing_report_api/__pycache__/
+racing_report_api/api/__pycache__/
+racing_report_api/database/__pycache__/
+racing_report_api/services/__pycache__/
+racing_report_api/tests/__pycache__/
+racing_report_api/tests/api/__pycache__/
+racing_report_api/tests/database/__pycache__/
+racing_report_api/tests/services/__pycache__/
 database/__pycache__/
 tests/__pycache__/
 tests/api/__pycache__/

@@ -1,7 +1,6 @@
 import xml.etree.ElementTree as ET
 
-from REST_API_report_of_Monaco_2018_Racing.services.formatters import \
-    convert_to_xml
+from racing_report_api.services.formatters import convert_to_xml
 
 
 def test_xml_conversion_basic():

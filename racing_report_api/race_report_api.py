@@ -16,7 +16,7 @@ def create_app():
 
     bootstrap.init_app(app)
 
-    from REST_API_report_of_Monaco_2018_Racing.api import api_bp
+    from racing_report_api.api import api_bp
     app.register_blueprint(api_bp)
 
     Swagger(app, template_file="swagger_docs.yml")

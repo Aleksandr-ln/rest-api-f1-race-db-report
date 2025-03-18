@@ -35,6 +35,7 @@ pip install -r requirements.txt
 
 ## Database Initialization
 ```
+export PYTHONPATH=$(pwd)/..
 python -m database.setup_db
 ```
 
@@ -46,24 +47,54 @@ python race_report_api.py
 ```
 
 The API will be available at:
-http://localhost:5000/api/v1/report/
+http://localhost:5000/api/v1/report/?event=Monaco%202018%20Grand%20Prix&session=Qualification
 
 ***
 
 # API Usage
+
+## Notes:
+- `event` and `session` parameters must correspond to existing records in the database.
+- Available `format`: `json` (default), `xml`.
+
 # JSON Request:
 
 ```
-curl -X GET "http://localhost:5000/api/v1/report/?format=json"
+curl -X GET "http://localhost:5000/api/v1/report/?event=Monaco%202018%20Grand%20Prix&session=Qualification&format=json"
 
 ```
 
 # XML Request:
 
 ```
-curl -X GET "http://localhost:5000/api/v1/report/?format=xml"
+curl -X GET "http://localhost:5000/api/v1/report/?event=Monaco%202018%20Grand%20Prix&session=Qualification&format=xml"
 
 ```
+
+## Database Structure
+
+### Tables
+
+#### Driver
+| Field        | Type       | Description                              |
+|--------------|------------|------------------------------------------|
+| id           | AutoField  | Primary key                              |
+| abbreviation | CharField  | Driver abbreviation (unique, 3 letters)  |
+| full_name    | CharField  | Full name of driver                      |
+| team         | CharField  | Team name                                |
+
+#### RaceInfo
+| Field       | Type            | Description                               |
+|-------------|-----------------|-------------------------------------------|
+| id          | AutoField       | Primary key                               |
+| driver      | ForeignKeyField | Reference to Driver                       |
+| event       | CharField       | Name of race event (e.g., Monaco 2018 GP) |
+| session     | CharField       | Name of session (e.g., Qualification)     |
+| date        | DateField       | Date of the event                         |
+| start_time  | DateTimeField   | Start time of race/session (nullable)     |
+| end_time    | DateTimeField   | End time of race/session (nullable)       |
+
+- Composite Unique Index on `(driver, event, session)` to prevent duplicates.
 
 ## Expected Response (JSON):
 

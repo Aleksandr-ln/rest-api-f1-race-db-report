@@ -22,6 +22,16 @@ paths:
           enum: [json, xml]
           default: json
           description: "Response format (json or xml)"
+        - in: query
+          name: event
+          type: string
+          required: true
+          description: Event name (e.g., 'Monaco 2018 Grand Prix')
+        - in: query
+          name: session
+          type: string
+          required: true
+          description: Session name (e.g., 'Qualification')
       responses:
         200:
           description: A JSON or XML report of the race

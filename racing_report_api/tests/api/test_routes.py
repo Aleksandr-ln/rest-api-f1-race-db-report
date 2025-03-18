@@ -1,5 +1,5 @@
 import pytest
-from REST_API_report_of_Monaco_2018_Racing.race_report_api import create_app
+from racing_report_api.race_report_api import create_app
 
 
 @pytest.fixture

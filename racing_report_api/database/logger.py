@@ -4,7 +4,7 @@ Logger configuration for consistent application-wide logging.
 import logging
 import os
 
-from REST_API_report_of_Monaco_2018_Racing.config import LOGS_DIR
+from racing_report_api.config import LOGS_DIR
 
 os.makedirs(LOGS_DIR, exist_ok=True)
 

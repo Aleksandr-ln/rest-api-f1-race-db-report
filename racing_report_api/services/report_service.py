@@ -3,12 +3,15 @@ Service to generate formatted race reports based on database content.
 """
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional
 
-from database.models import Driver, RaceEnd, RaceStart
 from monaco_2018_racing.report import (
-    Race, Racer, SortedRaceResults, format_timedelta, sort_race_results
+    Race, Racer, SortedRaceResults,
+    format_timedelta, sort_race_results
 )
+
+from ..database.logger import logger
+from ..database.models import Driver, RaceInfo
 
 
 @dataclass
@@ -51,12 +54,12 @@ class ReportAdapter:
         if log_type == "start":
             return {
                 entry.driver.abbreviation: entry.start_time
-                for entry in RaceStart.select()
+                for entry in RaceInfo.select()
             }
         elif log_type == "end":
             return {
                 entry.driver.abbreviation: entry.end_time
-                for entry in RaceEnd.select()
+                for entry in RaceInfo.select()
             }
         else:
             raise ValueError("Invalid log type. Use 'start' or 'end'.")
@@ -122,23 +125,64 @@ def format_race_results(races: List[Race], start_pos: int) -> List[RaceResult]:
     ]
 
 
-def get_race_report() -> RaceReport:
+def get_race_info(event: str, session: str) -> Optional[RaceInfo]:
     """
-    Retrieves and formats the race report using the database.
+    Retrieves race information based on event and session.
+
+    Args:
+        event (str): Race event name.
+        session (str): Session name.
+
+    Returns:
+        Optional[RaceInfo]: Race information if found, otherwise None.
+    """
+    try:
+        race = RaceInfo.get(
+            (RaceInfo.event == event) & (RaceInfo.session == session)
+        )
+        logger.debug(f"Race info found: {race}")
+        return race
+    except RaceInfo.DoesNotExist:
+        logger.warning(
+            f"Race info not found for event='{event}', session='{session}'")
+        return None
+
+
+def get_race_report(event: str, session: str) -> RaceReport:
+    """
+    Retrieves and formats the race report for the given event and session.
+
+    Args:
+        event (str): Race event name.
+        session (str): Session name.
 
     Returns:
         RaceReport: The structured race report data.
     """
+    logger.info(
+        f"Generating race report for event='{event}', session='{session}'")
+
+    race_info = get_race_info(event, session)
+
+    if race_info is None:
+        logger.info(
+            f"No race info found for event='{event}', session='{session}'. "
+            f"Returning empty report.")
+        return RaceReport(
+            race=f"{event} - {session}",
+            date="N/A",
+            results=[],
+            disqualified=[]
+        )
+
     report_data = ReportAdapter.build_report_from_db()
     sorted_results: SortedRaceResults = sort_race_results(report_data)
 
     return RaceReport(
-        race="Monaco 2018 Grand Prix - Qualification",
-        date="2018-05-24",
+        race=f"{race_info.event} - {race_info.session}",
+        date=str(race_info.date),
         results=format_race_results(
-            [race for _, race in sorted_results.positive_times], start_pos=1
-        ),
+            [race for _, race in sorted_results.positive_times], start_pos=1),
         disqualified=format_race_results(
-            [race for _, race in sorted_results.negative_times], start_pos=16
-        ),
+            [race for _, race in sorted_results.negative_times], start_pos=16)
     )

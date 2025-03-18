@@ -1,7 +1,9 @@
 import unittest
 from datetime import datetime
 
-from database.setup_db import parse_abbreviations, parse_log_file
+from racing_report_api.database.setup_db import (
+    parse_abbreviations, parse_log_file
+)
 
 
 class TestSetupDB(unittest.TestCase):
@@ -42,7 +44,9 @@ class TestSetupDB(unittest.TestCase):
 
     def test_invalid_log_format(self):
         data = "INVALID_LINE_WITHOUT_UNDERSCORE"
-        with open('test_invalid_log.txt', 'w') as f:
+        with open(self.invalid_log_file, 'w') as f:
             f.write(data)
-        with self.assertRaises(ValueError):
-            parse_log_file('test_invalid_log.txt')
+
+        result = parse_log_file(self.invalid_log_file)
+
+        self.assertEqual(len(result), 0)

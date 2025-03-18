@@ -1,6 +1,6 @@
 import pytest
 from bs4 import BeautifulSoup
-from REST_API_report_of_Monaco_2018_Racing.race_report_api import create_app
+from racing_report_api.race_report_api import create_app
 
 
 @pytest.fixture
@@ -12,7 +12,10 @@ def client():
 
 
 def test_api_json_response(client):
-    response = client.get("/api/v1/report/?format=json")
+    response = client.get(
+        "/api/v1/report/?event=Monaco%202018%20Grand%20Prix"
+        "&session=Qualification&format=json"
+    )
     assert response.status_code == 200
     assert response.content_type == "application/json"
 
@@ -29,7 +32,10 @@ def test_api_json_response(client):
 
 
 def test_api_xml(client):
-    response = client.get("/api/v1/report/?format=xml")
+    response = client.get(
+        "/api/v1/report/?event=Monaco%202018%20Grand%20Prix"
+        "&session=Qualification&format=xml"
+    )
     assert response.status_code == 200
     assert response.content_type.startswith("application/xml")
 
@@ -40,7 +46,10 @@ def test_api_xml(client):
 
 
 def test_api_invalid_format(client):
-    response = client.get("/api/v1/report/?format=txt")
+    response = client.get(
+        "/api/v1/report/?event=Monaco%202018%20Grand%20Prix"
+        "&session=Qualification&format=txt"
+    )
     assert response.status_code == 400
 
     json_data = response.get_json()
@@ -50,11 +59,16 @@ def test_api_invalid_format(client):
 
 
 def test_api_xml_structure(client):
-    response = client.get("/api/v1/report/?format=xml")
+    response = client.get(
+        "/api/v1/report/?event=Monaco%202018%20Grand%20Prix"
+        "&session=Qualification&format=xml"
+    )
     xml_data = response.data.decode("utf-8")
     soup = BeautifulSoup(xml_data, "lxml-xml")
 
+    assert soup.find("race") is not None
     assert soup.find("race").text == "Monaco 2018 Grand Prix - Qualification"
+    assert soup.find("date") is not None
     assert soup.find("date").text == "2018-05-24"
     assert soup.find("results") is not None
     assert soup.find("disqualified") is not None

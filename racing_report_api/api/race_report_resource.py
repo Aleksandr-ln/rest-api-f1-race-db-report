@@ -4,12 +4,9 @@ serving race reports in JSON or XML format.
 """
 from flask import Response
 from flask_restful import Resource
-from REST_API_report_of_Monaco_2018_Racing.services.report_service import \
-    get_race_report
-from REST_API_report_of_Monaco_2018_Racing.services.request_parsers import \
-    parse_request
-from REST_API_report_of_Monaco_2018_Racing.services.response_formatter import \
-    format_race_response
+from racing_report_api.services.report_service import get_race_report
+from racing_report_api.services.request_parsers import parse_request
+from racing_report_api.services.response_formatter import format_race_response
 
 
 class RaceReportResource(Resource):
@@ -25,6 +22,8 @@ class RaceReportResource(Resource):
             Response: JSON/XML race report or error message.
         """
         request_params = parse_request()
-        report_data = get_race_report()
+        report_data = get_race_report(
+            request_params.event, request_params.session
+        )
 
         return format_race_response(report_data, request_params.format)

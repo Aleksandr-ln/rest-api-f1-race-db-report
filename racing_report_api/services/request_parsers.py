@@ -2,6 +2,11 @@
 Contains utilities for parsing and validating incoming API request
 parameters for race reports, including request parsers and dataclass
 encapsulation for structured data handling.
+
+Expected query parameters:
+- event: Name of the race event (required).
+- session: Name of the session (required).
+- format: Output format (json/xml), default is 'json'.
 """
 from dataclasses import dataclass
 
@@ -16,6 +21,8 @@ class ReportRequest:
     Attributes:
         format (str): The desired output format ('json' or 'xml').
     """
+    event: str
+    session: str
     format: str
 
 
@@ -35,6 +42,20 @@ def get_base_parser() -> reqparse.RequestParser:
         help="Format must be 'json' or 'xml'",
         location="args",
     )
+    parser.add_argument(
+        "event",
+        type=str,
+        required=True,
+        help="Event name is required",
+        location="args",
+    )
+    parser.add_argument(
+        "session",
+        type=str,
+        required=True,
+        help="Session name is required",
+        location="args",
+    )
     return parser
 
 
@@ -46,4 +67,6 @@ def parse_request() -> ReportRequest:
         ReportRequest: Parsed request parameters encapsulated in a dataclass.
     """
     args = get_base_parser().parse_args()
-    return ReportRequest(format=args["format"])
+    return ReportRequest(
+        event=args["event"], session=args["session"], format=args["format"]
+    )
