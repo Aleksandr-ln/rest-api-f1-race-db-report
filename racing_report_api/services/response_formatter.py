@@ -10,6 +10,7 @@ from flask import Response, jsonify, make_response
 
 from ..services.formatters import convert_to_xml
 from ..services.report_service import RaceReport
+from .request_parsers import FORMAT_JSON, FORMAT_XML
 
 
 def error_response(message: str, status_code: int) -> Response:
@@ -50,12 +51,12 @@ def format_race_response(
         ],
     }
 
-    if format_type == "json":
+    if format_type == FORMAT_JSON:
         return Response(
             json.dumps(ordered_report, indent=4, ensure_ascii=False),
             mimetype="application/json"
         )
-    elif format_type == "xml":
+    elif format_type == FORMAT_XML:
         return Response(
             convert_to_xml(report_data), mimetype="application/xml"
         )

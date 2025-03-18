@@ -1,6 +1,7 @@
 import pytest
 from bs4 import BeautifulSoup
 from racing_report_api.race_report_api import create_app
+from racing_report_api.services.request_parsers import FORMAT_JSON, FORMAT_XML
 
 
 @pytest.fixture
@@ -13,8 +14,8 @@ def client():
 
 def test_api_json_response(client):
     response = client.get(
-        "/api/v1/report/?event=Monaco%202018%20Grand%20Prix"
-        "&session=Qualification&format=json"
+        f"/api/v1/report/?event=Monaco%202018%20Grand%20Prix"
+        f"&session=Qualification&format={FORMAT_JSON}"
     )
     assert response.status_code == 200
     assert response.content_type == "application/json"
@@ -55,7 +56,10 @@ def test_api_invalid_format(client):
     json_data = response.get_json()
     assert "message" in json_data
     assert "format" in json_data["message"]
-    assert json_data["message"]["format"] == "Format must be 'json' or 'xml'"
+    assert (
+            json_data["message"]["format"]
+            == f"Format must be '{FORMAT_JSON}' or '{FORMAT_XML}'"
+            )
 
 
 def test_api_xml_structure(client):

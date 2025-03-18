@@ -12,6 +12,9 @@ from dataclasses import dataclass
 
 from flask_restful import reqparse
 
+FORMAT_JSON = "json"
+FORMAT_XML = "xml"
+
 
 @dataclass
 class ReportRequest:
@@ -37,9 +40,9 @@ def get_base_parser() -> reqparse.RequestParser:
     parser.add_argument(
         "format",
         type=str,
-        choices=("json", "xml"),
-        default="json",
-        help="Format must be 'json' or 'xml'",
+        choices=(FORMAT_JSON, FORMAT_XML),
+        default=FORMAT_JSON,
+        help=f"Format must be '{FORMAT_JSON}' or '{FORMAT_XML}'",
         location="args",
     )
     parser.add_argument(
