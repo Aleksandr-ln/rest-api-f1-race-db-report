@@ -13,7 +13,7 @@ Clone the Repository
 
 ```
 cd existing_repo
-git remote add origin https://git.foxminded.ua/foxstudent107874/task-9-convert-and-store-data-to-the-database.git
+git remote add origin https://github.com/Aleksandr-ln/rest-api-f1-race-db-report.git
 git branch -M main
 git push -uf origin main
 ```
